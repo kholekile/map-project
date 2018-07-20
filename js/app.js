@@ -6,6 +6,7 @@ var bounds;
 var $nytHeaderElem = $('#nytimes-header');
 var $nytElem = $('#nytimes-articles');
 var $loadingImage = $('#loading-image');
+var $resetButton = $('#reset-map-button');
 var apiKey = '760c15eb398046998308040995d31403';
 
 $loadingImage.hide();
@@ -27,17 +28,21 @@ function initMap() {
 
 function populateInfoWindow(marker, infowindow) {
   
+  var infoWindowContent;
+
   if (infowindow.marker != marker && marker != null) {
     getNewYorkTimesData(marker.title);
      
     infowindow.marker = marker;
-    infowindow.setContent('<div> ' + '<p><strong><u>' + marker.title + '</u></strong></p>' + 
-                          '<p>'+ marker.description +'<a target="_blank" href=" '+ 
+    infoWindowContent = '<div> ' + '<p><strong><u>' + marker.title + '</u></strong></p>' + 
+                        '<p>'+ marker.description +'<a target="_blank" href=" '+ 
                           marker.read_more_link + '">' +' Read more' + '</a>'+ '</p>' + 
-                          '</div>');
+                        '</div>';
+    infowindow.setContent(infoWindowContent);
     infowindow.open(map, marker);
+
     infowindow.addListener('closeclick',function(){
-      infowindow.setMarker = null;
+      infowindow.marker = false;
       emptyDomElement();
     });
   }
@@ -73,7 +78,8 @@ function getNewYorkTimesData(location){
             $nytElem.append('<li class="article">' +
                             '<a target="_blank" href="' + article.web_url+ '">' + 
                             article.headline.main+ '</a>' +
-                            '<p>' + article.snippet + '</p>' + '</li>'
+                            '<p>' + article.snippet + '</p>' + 
+                            '</li>'
                           );
           };
       },
@@ -136,7 +142,7 @@ function createMarker(location){
 }
 
 function getErrorMessage(){
-  
+
    alert( "An Unknown error took place, " +
           "Please try and hard refrsh the application, " +
           "Press (ctrl and shift and R)"
@@ -168,6 +174,7 @@ var ViewModel = function() {
 
   self.filteredLocations = ko.computed(function() {
     if (!self.query()) {
+      $resetButton.click();
       self.filteredArray = self.locationList();
       return self.filteredArray;
     } else { 
