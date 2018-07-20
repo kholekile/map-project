@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Map Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
+  </head>
+
+  <body>
+
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+      <input class="generic-input" type="text" data-bind="value: query, valueUpdate: 'keyup'" placeholder="Filter Locations">
+
+      <div class="">
+        <ul data-bind="foreach: filteredLocations">
+          <li class="list-item" data-bind="text: title, click: $parent.selectItem"></li>
+        </ul>
+      </div>
+
+      <button class="generic-button" data-bind="click: resetMap ">Reset Map Lacations</button>
+
+      <div id="loading-image">
+        <img class="responsive" src="images/loading.gif">
+      </div>
+
+      <div class="">
+        <h3 id="nytimes-header" class="nytimes-header"></h3>
+        <ul id="nytimes-articles" class="list-item"></ul>
+      </div>
+      
+    </div>
+    
+    <div class="map-container">
+      <div class="button" onclick="openNav()">&#9776; Open Filter</div>
+      <div id="map" class="map"></div>
+    </div>
+
+    <script async defer 
+        src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCqbrymLDquICBdGaQKJVmLhFbGGcmkptI&v=3&callback=initMap" onerror="getErrorMessage()">
+    </script>
+    <script type="text/javascript" src="js/libs/knockout.js"></script>
+    <script type="text/javascript" src="js/libs/jquery.js"></script>
+    <script type="text/javascript" src="js/dataset.js"></script>
+    <script type="text/javascript" src="js/style.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+  </body>
+</html> 
+jquery.js
