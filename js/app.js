@@ -3,10 +3,10 @@ var markers = [];
 var marker;
 var largeInfowindow;
 var bounds;
-
 var $nytHeaderElem = $('#nytimes-header');
 var $nytElem = $('#nytimes-articles');
 var $loadingImage = $('#loading-image');
+var apiKey = '760c15eb398046998308040995d31403';
 
 $loadingImage.hide();
 
@@ -38,23 +38,27 @@ function populateInfoWindow(marker, infowindow) {
     infowindow.open(map, marker);
     infowindow.addListener('closeclick',function(){
       infowindow.setMarker = null;
-      $nytHeaderElem.empty();
-      $nytElem.empty();
+      emptyDomElement();
     });
   }
+}
+
+function emptyDomElement(){
+  $nytHeaderElem.empty();
+  $nytElem.empty();
 }
 
 function getNewYorkTimesData(location){
 
   var nytimesUrl = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + location + 
-                  '&sort=newest&api-key=760c15eb398046998308040995d31403';
+                  '&sort=newest&api-key='+ apiKey;
 
-  $loadingImage.show();
   $.ajax({
       type: 'GET',
       url: nytimesUrl,
       dataType: "json",
       beforeSend: function(){
+        emptyDomElement();
         $loadingImage.show();
       },
       complete: function(){
@@ -74,7 +78,8 @@ function getNewYorkTimesData(location){
           };
       },
       error: function (result) {
-        alert("Something went wrong when the application tried to load the New York Times Articles for "+ location);
+        alert("Something went wrong when the application tried " +
+              "to load the New York Times Articles for "+ location);
       }
   });
 }
@@ -117,6 +122,7 @@ function clearMarkers() {
 }
 
 function createMarker(location){
+
   marker = new google.maps.Marker({
     map: map,
     position: location.location,
@@ -130,6 +136,7 @@ function createMarker(location){
 }
 
 function getErrorMessage(){
+  
    alert( "An Unknown error took place, " +
           "Please try and hard refrsh the application, " +
           "Press (ctrl and shift and R)"
@@ -175,8 +182,7 @@ var ViewModel = function() {
   self.currentSelected = ko.observable();
 
   self.selectItem = function (location) {
-    $nytHeaderElem.empty();
-    $nytElem.empty();
+    emptyDomElement();
     self.currentSelected(location);  
     self.popUpMarker = createMarker(ko.toJS(self.currentSelected));
     populateInfoWindow(self.popUpMarker, largeInfowindow);
