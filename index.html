@@ -11,7 +11,7 @@
     <div id="mySidenav" class="sidenav">
       <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
-      <input class="generic-input" type="text" data-bind="value: query, valueUpdate: 'keyup'" placeholder="Filter Locations">
+      <input class="generic-input" type="text" data-bind="value: query, valueUpdate: 'input'" placeholder="Filter Locations">
 
       <div class="">
         <ul data-bind="foreach: filteredLocations">
@@ -19,7 +19,8 @@
         </ul>
       </div>
 
-      <button id="reset-map-button" class="generic-button" data-bind="click: resetMap ">Reset Map Lacations</button>
+      <button id="reset-map-button" class="generic-button" data-bind="click: resetMap ">Reset Map Lacations
+      </button>
 
       <div id="loading-image">
         <img class="responsive" src="images/loading.gif">

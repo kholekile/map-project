@@ -1,6 +1,6 @@
 # Neighborhood Map Project
 
-This is a single page application featuring a google map of all the places I would like to visit in america. The places or locations I want to vist are marked with google maps markers and the map has custom styles, once clicked on a marker or list view the application show you News Time articles about a particular place. 
+This is a single page application featuring a google map of all the places I would like to visit in New York and Manhattan. The places or locations I want to vist are marked with google maps markers and the map has custom styles, once clicked on a marker or list view the application show you News Time articles about a particular place. 
 
 ## Technologies used on the application
 *	Knockout JS 

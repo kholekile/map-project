@@ -9,9 +9,15 @@ var $loadingImage = $('#loading-image');
 var $resetButton = $('#reset-map-button');
 var apiKey = '760c15eb398046998308040995d31403';
 
-$loadingImage.hide();
 
-function initMap() {
+/**
+* @description Represents a book
+* @constructor
+* @param {string} title - The title of the book
+* @param {string} author - The author of the book
+*/
+
+function initMap(){
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.7413549, lng: -73.9980244},
@@ -20,19 +26,21 @@ function initMap() {
     mapTypeControl: false
   });
 
+
+  $loadingImage.hide();
   largeInfowindow = new google.maps.InfoWindow();
   bounds = new google.maps.LatLngBounds();
 
   loadMarkers(locations);
 }
 
-function populateInfoWindow(marker, infowindow) {
+function populateInfoWindow(marker, infowindow){
   
   var infoWindowContent;
 
-  if (infowindow.marker != marker && marker != null) {
+  if (infowindow.marker != marker && marker != null && marker.getAnimation() !== null) {
     getNewYorkTimesData(marker.title);
-     
+
     infowindow.marker = marker;
     infoWindowContent = '<div> ' + '<p><strong><u>' + marker.title + '</u></strong></p>' + 
                         '<p>'+ marker.description +'<a target="_blank" href=" '+ 
@@ -41,7 +49,10 @@ function populateInfoWindow(marker, infowindow) {
     infowindow.setContent(infoWindowContent);
     infowindow.open(map, marker);
 
+    stopeBounceAnimation(marker);
+
     infowindow.addListener('closeclick',function(){
+      stopeBounceAnimation(marker);
       infowindow.marker = false;
       emptyDomElement();
     });
@@ -103,8 +114,9 @@ function loadMarkers(locations){
           
       marker = createMarker(locations[i]);
       markers.push(marker);
-
+      
       marker.addListener('click', function() {
+        seteBounceAnimation(this);
         populateInfoWindow(this, largeInfowindow);
       });
 
@@ -122,7 +134,19 @@ function loadMarkers(locations){
   }
 }
 
-function clearMarkers() {
+function seteBounceAnimation(marker){
+  if (marker.getAnimation() === null) {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+  }  
+}
+
+function stopeBounceAnimation(marker){
+  if (marker !== null) {
+    marker.setAnimation(null); 
+  }
+}
+
+function clearMarkers(){
   locations = null;
   loadMarkers(locations);
 }
