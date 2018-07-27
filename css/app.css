@@ -50,9 +50,11 @@ html, body {
 	cursor:pointer;
 	max-height: 60px;
 }
+
 .map-container {
 	height: 100%;
 }
+
 .map {
     transition: margin-left .5s;
 	height: calc(100% - 60px);
