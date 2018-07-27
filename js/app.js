@@ -9,14 +9,10 @@ var $loadingImage = $('#loading-image');
 var $resetButton = $('#reset-map-button');
 var apiKey = '760c15eb398046998308040995d31403';
 
-
 /**
-* @description Represents a book
-* @constructor
-* @param {string} title - The title of the book
-* @param {string} author - The author of the book
+* @function to start up the map and initailize the map with marker
+* @callback function
 */
-
 function initMap(){
 
   map = new google.maps.Map(document.getElementById('map'), {
@@ -34,11 +30,21 @@ function initMap(){
   loadMarkers(locations);
 }
 
+/**
+* @function to create an information window popup when a marker is clicked
+* @param {object} marker - The marker clicked
+* @param {object} infowindow - The google maps InfoWindow object
+*/
 function populateInfoWindow(marker, infowindow){
   
   var infoWindowContent;
 
-  if (infowindow.marker != marker && marker != null && marker.getAnimation() !== null) {
+  if (marker.animation == null) {
+     setBounceAnimation(marker);
+  }
+
+  if (infowindow.marker != marker && marker != null) {
+
     getNewYorkTimesData(marker.title);
 
     infowindow.marker = marker;
@@ -49,21 +55,25 @@ function populateInfoWindow(marker, infowindow){
     infowindow.setContent(infoWindowContent);
     infowindow.open(map, marker);
 
-    stopeBounceAnimation(marker);
-
     infowindow.addListener('closeclick',function(){
-      stopeBounceAnimation(marker);
       infowindow.marker = false;
       emptyDomElement();
     });
+
   }
 }
 
+//function to remove all the DOM elements manipulated with JQuery
 function emptyDomElement(){
   $nytHeaderElem.empty();
   $nytElem.empty();
 }
 
+/**
+* @function that creates a AJAX call to the New York Times endpoint and returns
+  articles for a specific location
+* @param {string} location - The title or name of the location
+*/
 function getNewYorkTimesData(location){
 
   var nytimesUrl = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + location + 
@@ -101,6 +111,10 @@ function getNewYorkTimesData(location){
   });
 }
 
+/**
+* @function that loads markers on the map
+* @param {array} locations - An array of the points you want to mark on the map
+*/
 function loadMarkers(locations){
 
   if (locations) {
@@ -116,7 +130,6 @@ function loadMarkers(locations){
       markers.push(marker);
       
       marker.addListener('click', function() {
-        seteBounceAnimation(this);
         populateInfoWindow(this, largeInfowindow);
       });
 
@@ -134,23 +147,27 @@ function loadMarkers(locations){
   }
 }
 
-function seteBounceAnimation(marker){
-  if (marker.getAnimation() === null) {
-    marker.setAnimation(google.maps.Animation.BOUNCE);
-  }  
-}
-
-function stopeBounceAnimation(marker){
-  if (marker !== null) {
-    marker.setAnimation(null); 
+/**
+* @function that creates a animation when a marker is clicked
+* @param {object} marker - An array of the points you want to mark on the map
+*/
+function setBounceAnimation(marker){
+  if (marker) {
+    marker.setAnimation(4);
   }
 }
 
+// this function is used to remove markers on the map
 function clearMarkers(){
   locations = null;
   loadMarkers(locations);
 }
 
+/**
+* @function that creates a marker object from a normal Javascript object
+* @param {object} location - Its a normal Javascript object which is a point you want to create a marker from
+* @return {object} marker 
+*/
 function createMarker(location){
 
   marker = new google.maps.Marker({
@@ -165,6 +182,7 @@ function createMarker(location){
   return marker;
 }
 
+// this function is used or executed if the google maps script in the HTML file has a error
 function getErrorMessage(){
 
    alert( "An Unknown error took place, " +
@@ -173,6 +191,11 @@ function getErrorMessage(){
         );
 }
 
+/**
+* @description Represents a Location
+* @constructor
+* @param {object} data - The object of the location
+*/
 var Location = function(data) {
 
   this.title = ko.observable(data.title);
@@ -183,6 +206,7 @@ var Location = function(data) {
   this.read_more_link = ko.observable(data.read_more_link);
 }
 
+// this is used to handle all the list view functionality and used Knouckout JS framework 
 var ViewModel = function() {
 
   var self = this;
